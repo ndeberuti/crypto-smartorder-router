@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios'
+import axios, { AxiosRequestConfig } from 'axios'
 import config from 'config'
 import { sign } from './lib/sign';
 
@@ -12,21 +12,32 @@ export const getPriceEstimation = async (): Promise<any> => {
     const priceEstimationEndpoint: string = config.get('priceEstimationEndpoint');
     const url: string = baseUrl + priceEstimationEndpoint;
     
+    const params = {
+        'ccy': 'BTC',
+    };
+
     const headers = {
         'Content-Type': 'application/json',
         'OK-ACCESS-KEY': accessKey,
         'OK-ACCESS-TIMESTAMP': timestamp,
         'OK-ACCESS-PASSPHRASE': passphrase,
-        'OK-ACCESS-SIGN': sign(timestamp, method, priceEstimationEndpoint),
+        'OK-ACCESS-SIGN': sign(timestamp, method, priceEstimationEndpoint, params),
         'x-simulated-trading': 1
     }
+
+    try {
+        const response = await axios.request({
+            method: 'get',
+            url,
+            headers,
+            params,
+            timeout
+        });
+
+        return response;
+    } catch (error) {
+        console.log(error);    
+    }
     
-    const response = await axios.request({
-        method: 'get',
-        url,
-        headers,
-        timeout
-    })
     
-    return response;
 }
