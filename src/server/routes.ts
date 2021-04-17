@@ -1,6 +1,8 @@
 import express from 'express'
-import * as healthController from '../controllers'
+import * as healthController from './controller'
+import * as priceEstimationController from './controller'
 
 export const bind = (app: express.Application): void => {
-    app.post('/health', healthController.check)
+    app.get('/health', healthController.check)
+    app.get('/prime-estimation', priceEstimationController.checkPrice)
 }
