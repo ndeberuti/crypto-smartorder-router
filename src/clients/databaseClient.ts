@@ -28,7 +28,7 @@ export class DatabaseClient {
             pair,
             side,
             price
-        })
+        });
 
         console.log(this.table);
         return id;
