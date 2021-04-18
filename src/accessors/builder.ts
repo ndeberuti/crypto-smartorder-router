@@ -68,7 +68,6 @@ export const executeSwapOrder = async (swapOrder: SwapOrder): Promise<Object> =>
     const body = {
         "instId": pair,
         "tdMode": "cash",
-        "_feReq": true,
         "side": side,
         "ordType": "limit",
         "px": price,
@@ -84,9 +83,8 @@ export const executeSwapOrder = async (swapOrder: SwapOrder): Promise<Object> =>
         'x-simulated-trading': 1
     }
 
-    console.log('BODY', JSON.stringify(body));
 
-    const response = await axios.request({
+    const {status, data} = await axios.request({
         method: 'post',
         url,
         headers,
@@ -94,7 +92,5 @@ export const executeSwapOrder = async (swapOrder: SwapOrder): Promise<Object> =>
         timeout
     });
 
-   
-
-    return response;
+    return { status, data };
 }
