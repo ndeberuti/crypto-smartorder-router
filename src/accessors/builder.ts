@@ -1,9 +1,14 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios from 'axios'
 import config from 'config'
+
+import { PriceEstimation } from '../interfaces/priceEstimation';
+import { Side } from '../interfaces/side';
 import { SwapOrder } from '../interfaces/swapOrder';
 import { sign } from './lib/signer';
 
-export const getPriceEstimation = async (): Promise<Object> => {
+export const getPriceEstimation = async (priceEstimation: PriceEstimation): Promise<string> => {
+    const { pair, side } = priceEstimation;
+
     const accessKey: string = config.get('apiKey');
     const timestamp: string = new Date().toISOString();
     const baseUrl: string = config.get('baseUrl');
@@ -15,8 +20,10 @@ export const getPriceEstimation = async (): Promise<Object> => {
     
     const params = {
         'instType': 'SWAP',
-        'uly': 'ETH-USDT'
+        'uly': pair
     };
+
+    console.log('PARAMS:', params);
 
     const headers = {
         'Content-Type': 'application/json',
@@ -27,7 +34,7 @@ export const getPriceEstimation = async (): Promise<Object> => {
         'x-simulated-trading': 1
     }
 
-    const response = await axios.request({
+    const { data } = await axios.request({
         method: 'get',
         url,
         headers,
@@ -35,17 +42,9 @@ export const getPriceEstimation = async (): Promise<Object> => {
         timeout
     });
 
-    const {
-        askPx: bestAskPrice,
-        askSz: bestAskSize,
-        bidPx: bestBidPrice,
-        bidSz: bestBidSize
-    } = response.data.data[0];
+    let bestPrice = side === Side.Buy ? data.data[0].bidPx : data.data[0].askPx;
 
-    return {bestAskPrice, bestAskSize, bestBidPrice, bestBidSize};
-
-    
-    
+    return bestPrice;
 }
 
 export const executeSwapOrder = async (swapOrder: SwapOrder): Promise<Object> => {
@@ -83,7 +82,6 @@ export const executeSwapOrder = async (swapOrder: SwapOrder): Promise<Object> =>
         'x-simulated-trading': 1
     }
 
-
     const {status, data} = await axios.request({
         method: 'post',
         url,
@@ -91,6 +89,6 @@ export const executeSwapOrder = async (swapOrder: SwapOrder): Promise<Object> =>
         data: body,
         timeout
     });
-
-    return { status, data };
+    
+    return { status, data }
 }
