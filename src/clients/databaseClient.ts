@@ -24,6 +24,7 @@ export class DatabaseClient {
         const id = generateUUID();
         this.table.push({
             id,
+            clientId,
             pair,
             side,
             price
