@@ -6,10 +6,7 @@ import sql from "mssql";
 import { getOrderQuery, insertOrder } from "./queryRepository";
 import { SwapOrder } from "../interfaces/swapOrder";
 
-
 const dbConfig: sql.config = config.get('dbConfig')
-
-const testTable: Array<any> = [];
 
 export class DatabaseClient {
     private static instance: DatabaseClient;
