@@ -12,19 +12,17 @@ const dbConfig: sql.config = config.get('dbConfig')
 const testTable: Array<any> = [];
 
 export class DatabaseClient {
-    private table: Array<any>;
     private static instance: DatabaseClient;
     private sqlConnection: sql.ConnectionPool;
 
-    constructor(table: Array<any>, sqlConnection: sql.ConnectionPool) {
-        this.table = table;
+    constructor(sqlConnection: sql.ConnectionPool) {
         this.sqlConnection = sqlConnection;
     }
 
     static async getInstance(): Promise<DatabaseClient> {
         if (!this.instance) {
             const sqlConnection = await new sql.ConnectionPool(dbConfig).connect();
-            this.instance = new this(testTable, sqlConnection);
+            this.instance = new this(sqlConnection);
         };
         
         return this.instance;
