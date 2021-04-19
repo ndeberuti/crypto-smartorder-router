@@ -1,37 +1,53 @@
 import { Pair } from "../interfaces/pair";
 import { Side } from "../interfaces/side";
 import { generateUUID } from "../lib/uuidGenerator";
+import config from "config";
+import sql from "mssql";
+import { getOrderQuery, insertOrder } from "./queryRepository";
+import { SwapOrder } from "../interfaces/swapOrder";
 
-const testTable: Array<Object> = [];
+
+const dbConfig: sql.config = config.get('dbConfig')
+
+const testTable: Array<any> = [];
 
 export class DatabaseClient {
-    private table: Array<Object>;
+    private table: Array<any>;
     private static instance: DatabaseClient;
+    private sqlConnection: sql.ConnectionPool;
 
-    constructor(table: Array<Object>) {
+    constructor(table: Array<any>, sqlConnection: sql.ConnectionPool) {
         this.table = table;
+        this.sqlConnection = sqlConnection;
     }
 
-    static getInstance(): DatabaseClient {
+    static async getInstance(): Promise<DatabaseClient> {
         if (!this.instance) {
-          this.instance = new this(testTable);
-        }
-    
+            const sqlConnection = await new sql.ConnectionPool(dbConfig).connect();
+            this.instance = new this(testTable, sqlConnection);
+        };
+        
         return this.instance;
-      }
-    
-    savePrice(clientId: string, pair: Pair, side: Side, price: string): string {
-        const id = generateUUID();
-        this.table.push({
-            id,
-            clientId,
-            pair,
-            side,
-            price
-        });
+    }
 
-        console.log(this.table);
+    async saveOrder(clientId: string, pair: Pair, side: Side, volume: string, price: string): Promise<string> {
+        const id: string = generateUUID();
+        const query: string = insertOrder(id, clientId, pair, side, volume, price);
+
+        console.log('QUERY:', query);
+        await this.sqlConnection.query(query);
+  
         return id;
+    }
+
+    async getOrder(orderId: string) {
+        const query: string = getOrderQuery(orderId);
+        const result  = await this.sqlConnection.query(query);
+        console.log('RESUUUULT:', result);
+        const order: SwapOrder = result.recordset[0]
+
+        console.log('ORDEEEER:', order);
+        return order;
     }
     
 }
