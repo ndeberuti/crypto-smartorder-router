@@ -68,7 +68,7 @@ export const executeSwapOrder = async (swapOrder: SwapOrder): Promise<Object> =>
         "instId": pair,
         "tdMode": "cash",
         "side": side,
-        "ordType": "limit",
+        "ordType": "ioc",
         "px": price,
         "sz": volume
     };
