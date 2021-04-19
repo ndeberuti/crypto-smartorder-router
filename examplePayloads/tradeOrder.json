@@ -1,0 +1,9 @@
+{
+  "instId": "ETH-USDT",
+  "tdMode": "cash",
+  "_feReq": true,
+  "side": "buy",
+  "ordType": "limit",
+  "px": "2119.18",
+  "sz": "0.01"
+}
