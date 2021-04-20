@@ -26,22 +26,19 @@ export class DatabaseClient {
     }
 
     async saveOrder(clientId: string, pair: Pair, side: Side, volume: string, price: string): Promise<string> {
-        const id: string = generateUUID();
-        const query: string = insertOrder(id, clientId, pair, side, volume, price);
-
-        console.log('QUERY:', query);
-        await this.sqlConnection.query(query);
+        const orderId: string = generateUUID();
+        const insertOrderQuery: string = insertOrder(orderId, clientId, pair, side, volume, price);
+        await this.sqlConnection.query(insertOrderQuery);
   
-        return id;
+        return orderId;
     }
 
     async getOrder(orderId: string) {
-        const query: string = getOrderQuery(orderId);
-        const result  = await this.sqlConnection.query(query);
-        console.log('RESUUUULT:', result);
-        const order: SwapOrder = result.recordset[0]
+        const selectOrderQuery: string = getOrderQuery(orderId);
+        const result  = await this.sqlConnection.query(selectOrderQuery);
 
-        console.log('ORDEEEER:', order);
+        const order: SwapOrder = result.recordset[0];
+
         return order;
     }
     
