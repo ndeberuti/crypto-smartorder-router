@@ -24,8 +24,6 @@ export const getOptimalPriceEstimation = async (priceEstimation: PriceEstimation
         'uly': pair
     };
 
-    console.log('PARAMS:', params);
-
     const headers = {
         'Content-Type': 'application/json',
         'OK-ACCESS-KEY': accessKey,
@@ -35,7 +33,7 @@ export const getOptimalPriceEstimation = async (priceEstimation: PriceEstimation
         'x-simulated-trading': 1
     }
 
-    const {status, data } = await axios.request({
+    const {status, data} = await axios.request({
         method: 'get',
         url,
         headers,
