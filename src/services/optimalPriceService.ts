@@ -1,13 +1,13 @@
-import { getPriceEstimation, executeSwapOrder } from '../accessors/builder'
+import { getOptimalPriceEstimation } from '../accessors/okex/builder'
 import { DatabaseClient } from '../clients/databaseClient';
 import { PriceEstimation } from '../interfaces/priceEstimation';
 
-export const priceEstimationService = async (clientId: string, priceEstimation: PriceEstimation): Promise<any> => {
-    const price = await getPriceEstimation(priceEstimation);
+export const optimalPriceService = async (clientId: string, priceEstimation: PriceEstimation): Promise<Object> => {
+    const price = await getOptimalPriceEstimation(priceEstimation);
 
     const databaseInstance = await DatabaseClient.getInstance();
     const orderId = await databaseInstance.saveOrder(clientId, priceEstimation.pair, priceEstimation.side, priceEstimation.volume, price);
 
-    return { status: 200, data: {orderId, price}};
+    return { price, orderId };
 }
 
