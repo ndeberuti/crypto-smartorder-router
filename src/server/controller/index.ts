@@ -1,3 +1,3 @@
 export * from './healthController'
-export * from './priceEstimationController'
+export * from './optimalPriceController'
 export * from './swapOrderController'
