@@ -13,7 +13,7 @@ export const optimalPrice = async (req: express.Request, res: express.Response,
         const data = await optimalPriceService(clientId, priceEstimation);
         // const stringifiedData: string = JSON.stringify(data);
         
-        res.status(200).json({"status": "OK"});
+        res.status(200).send(data);
     } catch (error) {
         next(error)
     }
