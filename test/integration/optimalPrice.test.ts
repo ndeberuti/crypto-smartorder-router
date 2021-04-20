@@ -66,12 +66,17 @@ describe('Integration tests: /optimal-price route ',  () => {
     //   volume: "0.1",
     // });
 
-    await chai
+    chai
     .request(app)
     .post('/optimal-price')
     .set('x-client-id', dummyClientId)
     // .send(dummyRequestBody)
     .end((err, res) => {
-      chai.expect(res).to.have.status(201);
+      chai.expect(res).to.have.status(200);
+      chai.expect(res.body).to.eql(
+        {
+        orderId: "dummyOrderId",
+        price: "dummyAskPrice"
+      });
     })})
   }); 
