@@ -1,82 +1,61 @@
 import * as sinon from 'sinon';
-import nock from 'nock';
-import 'mocha';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-
-import axios from 'axios';
-import sql from "mssql";
-
 chai.use(chaiHttp);
+import axios from 'axios';
 
 import app from '../../src/server/app';
 import { DatabaseClient } from '../../src/clients/databaseClient';
 import { Pair } from '../../src/interfaces/pair';
 import { Side } from '../../src/interfaces/side';
 
-const mockReq = sinon.stub()
-const mockRes = sinon.stub();
-const dummyPair: Pair = Pair.EthUsdt;
-const dummySide: Side = Side.Sell;
+const saveOrderStub = sinon.stub()
+const getOrderStub = sinon.stub()
+const dummyEthUsdtPair: Pair = Pair.EthUsdt;
+const dummySellSide: Side = Side.Sell;
 
 const databaseInstanceMock: DatabaseClient | any = {
-  saveOrder: async () => dummyOrderId,
-  getOrder: async (orderId: string) => {
-    return {
-      pair: dummyPair ,
-      side: dummySide,
-      price: "1000",
-      volume: "0.1",
-    }
-  }
+  saveOrder: saveOrderStub,
+  getOrder: getOrderStub
 }
 
 const dummyClientId = 'dummyClient';
 const dummyOrderId = 'dummyOrderId';
+const dummyPrice = '1000';
 
 const dummyRequestBody = {
-  "pair": "ETH-USDT",
-  "side": "sell",
+  "pair": dummyEthUsdtPair,
+  "side": dummySellSide,
   "volume": "0.3"
-};
-
-const dummyResponse = {
-  property: "value"
 };
 
 describe('Integration tests: /optimal-price route ',  () => { 
   beforeEach(() => {
+    getOrderStub.resetHistory();
+    saveOrderStub.resetHistory();
   });
-  afterEach(() => {
-  });
-    
+
   it('should return status code 200 and expected message when called', async () => { 
     sinon.stub(axios, 'request').resolves({status: 200, data: {data:[
       {
-        askPx: 'dummyAskPrice'
+        askPx: dummyPrice
       }
     ]}});
 
     sinon.stub(DatabaseClient, 'getInstance').resolves(databaseInstanceMock);
-    // sinon.stub(DatabaseClient.prototype, 'saveOrder').resolves('saveOrderValue');
-    // sinon.stub(DatabaseClient.prototype, 'getOrder').resolves({
-    //   pair: dummyPair ,
-    //   side: dummySide,
-    //   price: "1000",
-    //   volume: "0.1",
-    // });
+    saveOrderStub.resolves(dummyOrderId);
 
     chai
     .request(app)
     .post('/optimal-price')
     .set('x-client-id', dummyClientId)
-    // .send(dummyRequestBody)
+    .send(dummyRequestBody)
     .end((err, res) => {
       chai.expect(res).to.have.status(200);
       chai.expect(res.body).to.eql(
         {
-        orderId: "dummyOrderId",
-        price: "dummyAskPrice"
+        orderId: dummyOrderId,
+        price: dummyPrice
       });
     })})
   }); 
