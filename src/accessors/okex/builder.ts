@@ -1,6 +1,6 @@
 import axios from 'axios'
 import config from 'config'
-import { OrderType } from '../../interfaces/orderType';
+import { Order } from '../../interfaces/order';
 
 import { PriceEstimation } from '../../interfaces/priceEstimation';
 import { Side } from '../../interfaces/side';
@@ -56,7 +56,7 @@ export const executeSwapOrder = async (swapOrder: SwapOrder): Promise<void> => {
         price,
         side,
         volume,
-        type = OrderType.Ioc
+        type = Order.Ioc
     } = swapOrder;
 
     const accessKey: string = config.get('apiKey');
