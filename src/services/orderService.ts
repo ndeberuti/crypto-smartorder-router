@@ -1,25 +1,27 @@
-import { executeSwapOrder } from '../accessors/builder'
+import { executeSwapOrder } from '../accessors/okex/builder'
 import { DatabaseClient } from '../clients/databaseClient';
+import { Order } from '../interfaces/order';
 import { SwapOrder } from '../interfaces/swapOrder';
 
 
 
 
-export const swapOrderService = async (swapOrder: SwapOrder): Promise<any> => {
+export const swapOrderService = async (swapOrder: SwapOrder): Promise<void> => {
     
-    const res = await executeSwapOrder(swapOrder);
-    
-    return res;
+    await executeSwapOrder(swapOrder);
 }
 
-export const applyOrderService = async (orderId: string): Promise<any> => {
+export const applyOrderService = async (orderId: string, orderType: Order): Promise<void> => {
+    
     const databaseInstance = await DatabaseClient.getInstance();
     
-    const order: SwapOrder = await databaseInstance.getOrder(orderId);
+    const order: SwapOrder = {
+        ...await databaseInstance.getOrder(orderId),
+        type: orderType
+    };
 
-    console.log('APPLY ORDER SWAP ORDER:', JSON.stringify(order))   ;
-    const res = await executeSwapOrder(order);
+    console.log('APPLY ORDER SWAP ORDER:', JSON.stringify(order));
     
-    return res;
+    await executeSwapOrder(order);
 }
 
