@@ -1,2 +1,2 @@
-export * from './priceEstimationService'
+export * from './optimalPriceService'
 export * from './orderService'
