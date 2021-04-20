@@ -1,12 +1,13 @@
 import axios from 'axios'
 import config from 'config'
+import { OrderType } from '../../interfaces/orderType';
 
-import { PriceEstimation } from '../interfaces/priceEstimation';
-import { Side } from '../interfaces/side';
-import { SwapOrder } from '../interfaces/swapOrder';
-import { sign } from './lib/signer';
+import { PriceEstimation } from '../../interfaces/priceEstimation';
+import { Side } from '../../interfaces/side';
+import { SwapOrder } from '../../interfaces/swapOrder';
+import { sign } from '../lib/signer';
 
-export const getPriceEstimation = async (priceEstimation: PriceEstimation): Promise<string> => {
+export const getOptimalPriceEstimation = async (priceEstimation: PriceEstimation): Promise<string> => {
     const { pair, side } = priceEstimation;
 
     const accessKey: string = config.get('apiKey');
@@ -34,7 +35,7 @@ export const getPriceEstimation = async (priceEstimation: PriceEstimation): Prom
         'x-simulated-trading': 1
     }
 
-    const { data } = await axios.request({
+    const {status, data } = await axios.request({
         method: 'get',
         url,
         headers,
@@ -42,17 +43,20 @@ export const getPriceEstimation = async (priceEstimation: PriceEstimation): Prom
         timeout
     });
 
+    if(status !== 200) throw new Error('Cannot request optimal price');
+
     let bestPrice = side === Side.Buy ? data.data[0].bidPx : data.data[0].askPx;
 
     return bestPrice;
 }
 
-export const executeSwapOrder = async (swapOrder: SwapOrder): Promise<Object> => {
+export const executeSwapOrder = async (swapOrder: SwapOrder): Promise<void> => {
     const {
         pair,
         price,
         side,
-        volume
+        volume,
+        type = OrderType.Ioc
     } = swapOrder;
 
     const accessKey: string = config.get('apiKey');
@@ -68,7 +72,7 @@ export const executeSwapOrder = async (swapOrder: SwapOrder): Promise<Object> =>
         "instId": pair,
         "tdMode": "cash",
         "side": side,
-        "ordType": "ioc",
+        "ordType": type,
         "px": price,
         "sz": volume
     };
@@ -82,13 +86,13 @@ export const executeSwapOrder = async (swapOrder: SwapOrder): Promise<Object> =>
         'x-simulated-trading': 1
     }
 
-    const {status, data} = await axios.request({
+    const { status } = await axios.request({
         method: 'post',
         url,
         headers,
         data: body,
         timeout
     });
-    
-    return { status, data }
+
+    if(status !== 200) throw new Error('Cannot apply order');
 }
