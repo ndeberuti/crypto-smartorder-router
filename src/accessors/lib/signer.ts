@@ -1,7 +1,7 @@
 import config from 'config'
 import CryptoJS from 'crypto-js'
 
-export const sign = (timestamp: string, method: string, endpoint: string, params: Object | undefined, body: Object | undefined ): string => {
+export const sign = (timestamp: string, method: string, endpoint: string, params?: Object, body?: Object): string => {
    const secretKey: string = config.get('secretKey');
     const endpointWithParams = addParamsToEndpoint(endpoint, params);
     const preSignedString = timestamp + method + endpointWithParams + (body !== undefined ? JSON.stringify(body) : '');
@@ -21,7 +21,6 @@ const addParamsToEndpoint = (endpoint: string, params: any): string => {
         } else {
             endpointWithParams = endpointWithParams + '&' + param + '=' + params[param];
         }
-
     }
     
     return endpointWithParams;
