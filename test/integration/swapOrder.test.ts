@@ -43,10 +43,6 @@ describe('Integration tests: /swap-order route ',  () => {
     sinon.restore();
   });
 
-  afterEach(() => {
-    sinon.restore();
-  });
-
   it('should return status code 200 and expected message when executing a swap "Immediate or Cancel" order to buy ETH-USDT pair with no explicit type  ', async () => { 
    const axiosStubbed = sinon.stub(axios, 'request').resolves({status: 200, data: {}});
     
