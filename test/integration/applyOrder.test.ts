@@ -170,6 +170,26 @@ describe('Integration tests: /apply-order route ',  () => {
         chai.expect(JSON.stringify(axiosStubbed.args[0][0].data)).to.be.equal(JSON.stringify(btcUsdtLimitBuyRequestData));
       })});
 
-      
+      it('should return status code 200 and expected message when applying a buy "Immediate or Cancel" order for BTC-USDT pair  ', async () => { 
+        sinon.stub(axios, 'request').resolves({status: 500, data: {}});
+        
+        const dbData = {
+          pair: Pair.BtcUsdt ,
+          side: Side.Buy,
+          price: "1000",
+          volume: "0.1",
+        };
+    
+        getOrderStub.resolves(dbData);
+    
+        sinon.stub(DatabaseClient, 'getInstance').resolves(databaseInstanceMock);
+    
+        chai
+        .request(app)
+        .post(`/apply-order/${dummyOrderId}`)
+        .send(dummyIocRequestBody)
+        .end((err, res) => {
+          chai.expect(res).to.have.status(500);
+        })});
 }); 
 
