@@ -12,17 +12,6 @@ import { Side } from '../../src/interfaces/side';
 import { Order } from '../../src/interfaces/order';
 import { SwapOrder } from '../../src/interfaces/swapOrder';
 
-const saveOrderStub = sinon.stub()
-const getOrderStub = sinon.stub()
-// const mockRes = sinon.stub();
-
-// const dummySide: Side = Side.Sell;
-
-// const databaseInstanceMock: DatabaseClient | any = {
-//   saveOrder: saveOrderStub,
-//   getOrder: getOrderStub
-// }
-
 const dummySwapOrderBuyEthUsdtWithNoType: SwapOrder = {
         pair: Pair.EthUsdt,
         side: Side.Buy,
