@@ -108,6 +108,26 @@ describe('Integration tests: /swap-order route ',  () => {
       chai.expect(res.body).to.eql({});
       chai.expect(JSON.stringify(axiosStubbed.args[0][0].data)).to.be.equal(JSON.stringify(requestData));
   })});
+
+  it('should return status code 500 if okex fails to return a 200', async () => { 
+    const axiosStubbed = sinon.stub(axios, 'request').resolves({status: 500, data: {}});
+    
+    const requestData = {
+        instId: Pair.BtcUsdt,
+        tdMode: "cash",
+        side: Side.Sell,
+        ordType: Order.Ioc,
+        px: "1000",
+        sz: "0.1",
+    };
+
+    chai
+    .request(app)
+    .post(`/swap-order`)
+    .send(dummySwapOrderSellBtcUsdtWithIoCType)
+    .end((err, res) => {
+      chai.expect(res).to.have.status(500);
+  })});
       
 }); 
 
