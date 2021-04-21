@@ -6,7 +6,6 @@ import axios from 'axios';
 chai.use(chaiHttp);
 
 import app from '../../src/server/app';
-import { DatabaseClient } from '../../src/clients/databaseClient';
 import { Pair } from '../../src/interfaces/pair';
 import { Side } from '../../src/interfaces/side';
 import { Order } from '../../src/interfaces/order';
@@ -18,7 +17,6 @@ const dummySwapOrderBuyEthUsdtWithNoType: SwapOrder = {
         price: '1000',
         volume: '0.1',
 };
-
 
 const dummySwapOrderSellBtcUsdtWithLimitType: SwapOrder = {
     pair: Pair.BtcUsdt,
