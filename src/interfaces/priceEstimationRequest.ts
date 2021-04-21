@@ -1,7 +1,7 @@
 import { Pair } from "./pair";
 import { Side } from "./side";
 
-export interface PriceEstimation {
+export interface PriceEstimationRequest {
     pair: Pair;
     side: Side;
     volume: string;

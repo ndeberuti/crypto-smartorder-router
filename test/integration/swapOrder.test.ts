@@ -51,14 +51,11 @@ const dummyIocRequestBody = {
   "orderType": Order.Ioc
  };
 
-
 const axiosStub = sinon.stub(axios, 'request');
-const getInstanceStub = sinon.stub(DatabaseClient, 'getInstance');
 
 describe('Integration tests: /swap-order route ',  () => { 
   beforeEach(() => {
-    axiosStub.resetHistory();
-    getInstanceStub.resetHistory();
+    axiosStub.restore();
   });
 
   it('should return status code 200 and expected message when executing a swap "Immediate or Cancel" order to buy ETH-USDT pair with no explicit type  ', async () => { 

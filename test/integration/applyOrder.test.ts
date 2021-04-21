@@ -5,7 +5,6 @@ import chaiHttp from 'chai-http';
 
 import axios from 'axios';
 
-
 chai.use(chaiHttp);
 
 import app from '../../src/server/app';
@@ -16,16 +15,12 @@ import { Order } from '../../src/interfaces/order';
 
 const saveOrderStub = sinon.stub()
 const getOrderStub = sinon.stub()
-const mockRes = sinon.stub();
-
-const dummySide: Side = Side.Sell;
 
 const databaseInstanceMock: DatabaseClient | any = {
   saveOrder: saveOrderStub,
   getOrder: getOrderStub
 }
 
-const dummyClientId = 'dummyClient';
 const dummyOrderId = 'dummyOrderId';
 
 const dummyLimitRequestBody = {
@@ -34,18 +29,18 @@ const dummyLimitRequestBody = {
 
 const dummyIocRequestBody = {
   "orderType": Order.Ioc
- };
+};
 
 
 const axiosStub = sinon.stub(axios, 'request');
 const getInstanceStub = sinon.stub(DatabaseClient, 'getInstance');
 
-describe('Integration tests: /apply-order route ',  () => { 
+describe.only('Integration tests: /apply-order route ',  () => { 
   beforeEach(() => {
-    axiosStub.resetHistory();
-    getInstanceStub.resetHistory();
+    axiosStub.restore();
+    getInstanceStub.restore();
   });
-
+  
   it('should return status code 200 and expected message when applying a sell limit order for ETH-USDT pair  ', async () => { 
     axiosStub.resolves({status: 200, data: {}});
     

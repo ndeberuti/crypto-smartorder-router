@@ -14,6 +14,9 @@ const getOrderStub = sinon.stub()
 const dummyEthUsdtPair: Pair = Pair.EthUsdt;
 const dummySellSide: Side = Side.Sell;
 
+const axiosStub = sinon.stub(axios, 'request');
+const getInstanceStub = sinon.stub(DatabaseClient, 'getInstance');
+
 const databaseInstanceMock: DatabaseClient | any = {
   saveOrder: saveOrderStub,
   getOrder: getOrderStub
@@ -31,18 +34,20 @@ const dummyRequestBody = {
 
 describe('Integration tests: /optimal-price route ',  () => { 
   beforeEach(() => {
-    getOrderStub.resetHistory();
-    saveOrderStub.resetHistory();
+    getOrderStub.restore();
+    saveOrderStub.restore();
+    getInstanceStub.restore();
+    axiosStub.restore();
   });
 
   it('should return status code 200 and expected message when called', async () => { 
-    sinon.stub(axios, 'request').resolves({status: 200, data: {data:[
+    axiosStub.resolves({status: 200, data: {data:[
       {
         askPx: dummyPrice
       }
     ]}});
 
-    sinon.stub(DatabaseClient, 'getInstance').resolves(databaseInstanceMock);
+    getInstanceStub.resolves(databaseInstanceMock);
     saveOrderStub.resolves(dummyOrderId);
 
     chai

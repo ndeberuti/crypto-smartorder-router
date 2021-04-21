@@ -2,12 +2,12 @@ import axios from 'axios'
 import config from 'config'
 import { Order } from '../../interfaces/order';
 
-import { PriceEstimation } from '../../interfaces/priceEstimation';
+import { PriceEstimationRequest } from '../../interfaces/priceEstimationRequest';
 import { Side } from '../../interfaces/side';
 import { SwapOrder } from '../../interfaces/swapOrder';
 import { sign } from '../lib/signer';
 
-export const getOptimalPriceEstimation = async (priceEstimation: PriceEstimation): Promise<string> => {
+export const getOptimalPriceEstimation = async (priceEstimation: PriceEstimationRequest): Promise<string> => {
     const { pair, side } = priceEstimation;
 
     const accessKey: string = config.get('apiKey');

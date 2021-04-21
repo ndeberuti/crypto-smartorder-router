@@ -7,11 +7,6 @@ chai.use(chaiHttp);
 
 import app from '../../src/server/app';
 
-
-const mockReq = sinon.stub()
-const mockRes = sinon.stub();
-const mockNext = sinon.stub();
-
 describe('Integration tests: /health route ',  () => { 
     
   it('should return status code 200 and expected message when called', async () => {
