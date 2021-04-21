@@ -1,5 +1,3 @@
-import * as sinon from 'sinon';
-import nock from 'nock';
 import 'mocha';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
