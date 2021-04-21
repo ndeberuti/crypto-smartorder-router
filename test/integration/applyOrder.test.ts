@@ -31,18 +31,18 @@ const dummyIocRequestBody = {
   "orderType": Order.Ioc
 };
 
-
-const axiosStub = sinon.stub(axios, 'request');
-const getInstanceStub = sinon.stub(DatabaseClient, 'getInstance');
-
-describe.only('Integration tests: /apply-order route ',  () => { 
+describe('Integration tests: /apply-order route ',  () => { 
   beforeEach(() => {
-    axiosStub.restore();
-    getInstanceStub.restore();
+    sinon.restore();
+  });
+
+  afterEach(() => {
+    sinon.restore();
+    DatabaseClient.deleteInstance();
   });
   
   it('should return status code 200 and expected message when applying a sell limit order for ETH-USDT pair  ', async () => { 
-    axiosStub.resolves({status: 200, data: {}});
+    const axiosStubbed = sinon.stub(axios, 'request').resolves({status: 200, data: {}});
     
     const dbData = {
       pair: Pair.EthUsdt ,
@@ -62,7 +62,7 @@ describe.only('Integration tests: /apply-order route ',  () => {
         sz: "0.1",
     };
 
-    getInstanceStub.resolves(databaseInstanceMock);
+    sinon.stub(DatabaseClient, 'getInstance').resolves(databaseInstanceMock);
 
     chai
     .request(app)
@@ -71,12 +71,12 @@ describe.only('Integration tests: /apply-order route ',  () => {
     .end((err, res) => {
       chai.expect(res).to.have.status(200);
       chai.expect(res.body).to.eql({});
-      chai.expect(JSON.stringify(axiosStub.args[0][0].data)).to.be.equal(JSON.stringify(requestData));
+      chai.expect(JSON.stringify(axiosStubbed.args[0][0].data)).to.be.equal(JSON.stringify(requestData));
   })});
 
   
   it('should return status code 200 and expected message when applying a buy limit order for BTC-USDT pair  ', async () => { 
-    axiosStub.resolves({status: 200, data: {}});
+    const axiosStubbed = sinon.stub(axios, 'request').resolves({status: 200, data: {}});
     
     const dbData = {
       pair: Pair.BtcUsdt ,
@@ -96,7 +96,7 @@ describe.only('Integration tests: /apply-order route ',  () => {
         sz: "0.1",
     };
 
-    getInstanceStub.resolves(databaseInstanceMock);
+    sinon.stub(DatabaseClient, 'getInstance').resolves(databaseInstanceMock);
 
     chai
     .request(app)
@@ -105,11 +105,11 @@ describe.only('Integration tests: /apply-order route ',  () => {
     .end((err, res) => {
       chai.expect(res).to.have.status(200);
       chai.expect(res.body).to.eql({});
-      chai.expect(JSON.stringify(axiosStub.args[0][0].data)).to.be.equal(JSON.stringify(btcUsdtLimitBuyRequestData));
+      chai.expect(JSON.stringify(axiosStubbed.args[0][0].data)).to.be.equal(JSON.stringify(btcUsdtLimitBuyRequestData));
     })});
 
     it('should return status code 200 and expected message when applying a sell "Immediate or Cancel" order for ETH-USDT pair  ', async () => { 
-      axiosStub.resolves({status: 200, data: {}});
+      const axiosStubbed = sinon.stub(axios, 'request').resolves({status: 200, data: {}});
       
       const dbData = {
         pair: Pair.EthUsdt ,
@@ -129,7 +129,7 @@ describe.only('Integration tests: /apply-order route ',  () => {
           sz: "0.1",
       };
   
-      getInstanceStub.resolves(databaseInstanceMock);
+      sinon.stub(DatabaseClient, 'getInstance').resolves(databaseInstanceMock);
   
       chai
       .request(app)
@@ -138,12 +138,12 @@ describe.only('Integration tests: /apply-order route ',  () => {
       .end((err, res) => {
         chai.expect(res).to.have.status(200);
         chai.expect(res.body).to.eql({});
-        chai.expect(JSON.stringify(axiosStub.args[0][0].data)).to.be.equal(JSON.stringify(requestData));
+        chai.expect(JSON.stringify(axiosStubbed.args[0][0].data)).to.be.equal(JSON.stringify(requestData));
     })});
   
     
     it('should return status code 200 and expected message when applying a buy "Immediate or Cancel" order for BTC-USDT pair  ', async () => { 
-      axiosStub.resolves({status: 200, data: {}});
+      const axiosStubbed = sinon.stub(axios, 'request').resolves({status: 200, data: {}});
       
       const dbData = {
         pair: Pair.BtcUsdt ,
@@ -163,7 +163,7 @@ describe.only('Integration tests: /apply-order route ',  () => {
           sz: "0.1",
       };
   
-      getInstanceStub.resolves(databaseInstanceMock);
+      sinon.stub(DatabaseClient, 'getInstance').resolves(databaseInstanceMock);
   
       chai
       .request(app)
@@ -172,7 +172,7 @@ describe.only('Integration tests: /apply-order route ',  () => {
       .end((err, res) => {
         chai.expect(res).to.have.status(200);
         chai.expect(res.body).to.eql({});
-        chai.expect(JSON.stringify(axiosStub.args[0][0].data)).to.be.equal(JSON.stringify(btcUsdtLimitBuyRequestData));
+        chai.expect(JSON.stringify(axiosStubbed.args[0][0].data)).to.be.equal(JSON.stringify(btcUsdtLimitBuyRequestData));
       })});
 
       

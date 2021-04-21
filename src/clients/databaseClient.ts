@@ -9,7 +9,7 @@ import { SwapOrder } from "../interfaces/swapOrder";
 const dbConfig: sql.config = config.get('dbConfig')
 
 export class DatabaseClient {
-    private static instance: DatabaseClient;
+    private static instance: DatabaseClient | undefined;
     private sqlConnection: sql.ConnectionPool;
 
     constructor(sqlConnection: sql.ConnectionPool) {
@@ -23,6 +23,10 @@ export class DatabaseClient {
         };
         
         return this.instance;
+    }
+
+    static deleteInstance(): void {
+        this.instance = undefined;
     }
 
     async saveOrder(clientId: string, pair: Pair, side: Side, volume: string, price: string): Promise<string> {

@@ -14,14 +14,14 @@ import { SwapOrder } from '../../src/interfaces/swapOrder';
 
 const saveOrderStub = sinon.stub()
 const getOrderStub = sinon.stub()
-const mockRes = sinon.stub();
+// const mockRes = sinon.stub();
 
-const dummySide: Side = Side.Sell;
+// const dummySide: Side = Side.Sell;
 
-const databaseInstanceMock: DatabaseClient | any = {
-  saveOrder: saveOrderStub,
-  getOrder: getOrderStub
-}
+// const databaseInstanceMock: DatabaseClient | any = {
+//   saveOrder: saveOrderStub,
+//   getOrder: getOrderStub
+// }
 
 const dummySwapOrderBuyEthUsdtWithNoType: SwapOrder = {
         pair: Pair.EthUsdt,
@@ -51,15 +51,17 @@ const dummyIocRequestBody = {
   "orderType": Order.Ioc
  };
 
-const axiosStub = sinon.stub(axios, 'request');
-
 describe('Integration tests: /swap-order route ',  () => { 
   beforeEach(() => {
-    axiosStub.restore();
+    sinon.restore();
+  });
+
+  afterEach(() => {
+    sinon.restore();
   });
 
   it('should return status code 200 and expected message when executing a swap "Immediate or Cancel" order to buy ETH-USDT pair with no explicit type  ', async () => { 
-    axiosStub.resolves({status: 200, data: {}});
+   const axiosStubbed = sinon.stub(axios, 'request').resolves({status: 200, data: {}});
     
     const requestData = {
         instId: Pair.EthUsdt,
@@ -77,11 +79,11 @@ describe('Integration tests: /swap-order route ',  () => {
     .end((err, res) => {
       chai.expect(res).to.have.status(200);
       chai.expect(res.body).to.eql({});
-      chai.expect(JSON.stringify(axiosStub.args[0][0].data)).to.be.equal(JSON.stringify(requestData));
+      chai.expect(JSON.stringify(axiosStubbed.args[0][0].data)).to.be.equal(JSON.stringify(requestData));
   })});
 
   it('should return status code 200 and expected message when executing a swap "Limit" order to sell BTC-USDT pair with explicit type Limit  ', async () => { 
-    axiosStub.resolves({status: 200, data: {}});
+    const axiosStubbed = sinon.stub(axios, 'request').resolves({status: 200, data: {}});
     
     const requestData = {
         instId: Pair.BtcUsdt,
@@ -99,11 +101,11 @@ describe('Integration tests: /swap-order route ',  () => {
     .end((err, res) => {
       chai.expect(res).to.have.status(200);
       chai.expect(res.body).to.eql({});
-      chai.expect(JSON.stringify(axiosStub.args[0][0].data)).to.be.equal(JSON.stringify(requestData));
+      chai.expect(JSON.stringify(axiosStubbed.args[0][0].data)).to.be.equal(JSON.stringify(requestData));
   })});
 
   it('should return status code 200 and expected message when executing a swap "Immediate or Cancel" order to sell BTC-USDT pair with explicit type "IoC"  ', async () => { 
-    axiosStub.resolves({status: 200, data: {}});
+    const axiosStubbed = sinon.stub(axios, 'request').resolves({status: 200, data: {}});
     
     const requestData = {
         instId: Pair.BtcUsdt,
@@ -121,7 +123,7 @@ describe('Integration tests: /swap-order route ',  () => {
     .end((err, res) => {
       chai.expect(res).to.have.status(200);
       chai.expect(res.body).to.eql({});
-      chai.expect(JSON.stringify(axiosStub.args[0][0].data)).to.be.equal(JSON.stringify(requestData));
+      chai.expect(JSON.stringify(axiosStubbed.args[0][0].data)).to.be.equal(JSON.stringify(requestData));
   })});
       
 }); 
