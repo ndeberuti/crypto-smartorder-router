@@ -36,11 +36,6 @@ describe('Integration tests: /apply-order route ',  () => {
     sinon.restore();
   });
 
-  afterEach(() => {
-    sinon.restore();
-    DatabaseClient.deleteInstance();
-  });
-  
   it('should return status code 200 and expected message when applying a sell limit order for ETH-USDT pair  ', async () => { 
     const axiosStubbed = sinon.stub(axios, 'request').resolves({status: 200, data: {}});
     
