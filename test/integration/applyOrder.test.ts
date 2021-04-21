@@ -170,7 +170,7 @@ describe('Integration tests: /apply-order route ',  () => {
         chai.expect(JSON.stringify(axiosStubbed.args[0][0].data)).to.be.equal(JSON.stringify(btcUsdtLimitBuyRequestData));
       })});
 
-      it('should return status code 200 and expected message when applying a buy "Immediate or Cancel" order for BTC-USDT pair  ', async () => { 
+      it('should return status code 500 if okex fails to return a 200', async () => { 
         sinon.stub(axios, 'request').resolves({status: 500, data: {}});
         
         const dbData = {
