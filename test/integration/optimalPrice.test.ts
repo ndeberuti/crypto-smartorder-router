@@ -34,12 +34,7 @@ describe('Integration tests: /optimal-price route ',  () => {
     sinon.restore();
   });
 
-  afterEach(() => {
-    sinon.restore();
-    DatabaseClient.deleteInstance();
-  });
-
-  it('should return status code 200 and expected message when called', async () => { 
+  it('should return status code 200, an orderId and the optimal price when called', async () => { 
     sinon.stub(axios, 'request').resolves({status: 200, data: {data:[
       {
         askPx: dummyPrice
@@ -62,4 +57,16 @@ describe('Integration tests: /optimal-price route ',  () => {
         price: dummyPrice
       });
     })})
+
+    it('should return status code 500, if okex fails to return a 200 status code', async () => { 
+      sinon.stub(axios, 'request').resolves({status: 500});
+  
+      chai
+      .request(app)
+      .post('/optimal-price')
+      .set('x-client-id', dummyClientId)
+      .send(dummyRequestBody)
+      .end((err, res) => {
+        chai.expect(res).to.have.status(500);
+      })})
   }); 
