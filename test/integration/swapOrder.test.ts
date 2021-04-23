@@ -112,15 +112,6 @@ describe('Integration tests: /swap-order route ',  () => {
   it('should return status code 500 if okex fails to return a 200', async () => { 
     const axiosStubbed = sinon.stub(axios, 'request').resolves({status: 500, data: {}});
     
-    const requestData = {
-        instId: Pair.BtcUsdt,
-        tdMode: "cash",
-        side: Side.Sell,
-        ordType: Order.Ioc,
-        px: "1000",
-        sz: "0.1",
-    };
-
     chai
     .request(app)
     .post(`/swap-order`)
