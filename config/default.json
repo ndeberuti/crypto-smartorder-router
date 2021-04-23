@@ -1,0 +1,15 @@
+{
+    "apiKey": "yourApiKey",
+    "secretKey": "yourSecretKey",
+    "passphrase": "yourPassphrase",
+    "baseUrl": "https://www.okex.com",
+    "priceEstimationEndpoint": "/api/v5/market/tickers",
+    "swapEndpoint": "/api/v5/trade/order",
+    "dbConfig": {
+        "user": "user",
+        "password": "password.",
+        "server": "server", 
+        "database": "database"
+    },
+    "timeout": 3000
+}
